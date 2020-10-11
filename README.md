@@ -1,0 +1,2 @@
+# CGRAgame
+Similar to colorswitch
