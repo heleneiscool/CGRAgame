@@ -19,75 +19,98 @@ class Wheel extends Obstacle {
     this.y =y;
   }
   void drawObstacle() {
+    //check if whole wheel is outside before trying to draw/clip
     if (y+size<-transY) {
       return;
     }
     if (y>height-transY) {
       return;
     }
-    float edgeAngle = asin((-transY+50-(y+(size/2.0)))/(size/2.0));
+    
+    float edgeAngle = asin((-transY+50-(y+(size/2.0)))/(size/2.0));//andgle between edge line and wheel center
     strokeWeight(1);
     stroke(0);
-    line(0, -transY+50, width, -transY+50);
-        strokeWeight(20);    noFill();
+   // line(0, -transY+50, width, -transY+50);
+     //   strokeWeight(20);    noFill();
     strokeCap(SQUARE);
 
     for (int i=0; i<4; i++) { 
       float angle = HALF_PI*i+(frameCount*speed)/40.0;
+      angle=angle%TWO_PI;
       float endAngle = angle+HALF_PI;
       stroke(sectors[i]);
-      if (y<-transY+50) {
-        if ((angle+HALF_PI)%TWO_PI >= edgeAngle & (angle+HALF_PI)%TWO_PI < PI-edgeAngle) { //end angle inside
-          if (angle%TWO_PI < edgeAngle) {//start is outside
-            angle=edgeAngle;
-          }
-          //if (angle%TWO_PI > PI-edgeAngle) {
-          //  angle=PI-edgeAngle;
-          //}
-        }
-        else{
-         if ((angle)%TWO_PI > PI-edgeAngle) {
-            continue;
-          } //if both are outside, do not draw
-          else{
-          endAngle=PI-edgeAngle;
-          }
-        }
-        //if ((angle)%TWO_PI >=edgeAngle & (angle)%TWO_PI < PI-edgeAngle) { //start angle inside
-        //  if (endAngle%TWO_PI < edgeAngle) {//start is outside
-        //    endAngle=edgeAngle;
-        //  }
-        //  if (endAngle%TWO_PI > PI-edgeAngle) {
-        //    endAngle=PI-edgeAngle;
-        //  }
-        //}
-      }
-      //if(((y<-transY+50) & (angle%TWO_PI)>edgeAngle & (angle%TWO_PI)+HALF_PI<PI-edgeAngle) |!(y<-transY+50)){
-      arc(x, y, size, size, angle, endAngle);
-      arc(x+size/2.0, y+size/2.0, size/2.0, size/2.0, edgeAngle, PI-edgeAngle);
-      //}
+    strokeWeight(1);
+    //if(y+size/2.0<-transY+50){
+    // if(angle<edgeAngle){
+    // if(endAngle<edgeAngle){continue;}//both less
+    // angle=edgeAngle;}
+    // if(endAngle>PI-edgeAngle){
+    //   if(angle>PI-edgeAngle){continue;}//both greater
+    // endAngle=PI-edgeAngle;
+    // }
+    //}
+      drawArc(x+size/2.0, y+size/2.0, size/2.0, angle, endAngle);
     }
   }
 
 
+void drawArc(float cx, float cy, float radius, float startAngle, float endAngle){
+    float c, s ;
+     // strokeWeight(5) ;
+float angle=startAngle;
+  while(angle>=startAngle & angle<endAngle){
+  c = cos(angle) ;
+  s = sin(angle) ;
+  float y0 = s*(radius-20)+cy;
+  float y1 = s*radius+cy;
+    float x0=c*(radius-20)+cx;
+    float x1 = c*radius+cx;
+    //first to if statements are for top edge
+  if(y0<-transY+50){
+    float m = (c*(radius-20))/(s*(radius-20));
+  y0=-transY+50;
+  x0 = m*(y0-cy)+cx;
+  }
+    if(y1<-transY+50){
+    float m = (c*(radius))/(s*(radius));
+  y1=-transY+50;
+  x1 = m*(y1-cy)+cx;
+  }
+  
+  //bottom edge
+  if(y0>height-transY-50){
+    float m = (c*(radius-20))/(s*(radius-20));
+  y0=height-transY-50;
+  x0 = m*(y0-cy)+cx;
+  }
+    if(y1>height-transY-50){
+    float m = (c*(radius))/(s*(radius));
+  y1=height-transY-50;
+  x1 = m*(y1-cy)+cx;
+  }
+  line( x0, y0, x1,y1 ) ;
+   angle = angle + 0.002 ;
+
+  }
+}
+
   boolean check(Ball user) {
-    return false;
     //first: check if ball is close to wheel
-    // float distTop = dist(x+(size/2.0), (y+size/2.0), user.x+user.size, user.y); 
-    // float distBottom = dist(x+(size/2.0), (y+size/2.0), user.x+user.size, user.y+user.size); 
+     float distTop = dist(x+(size/2.0), (y+size/2.0), user.x+user.size, user.y); 
+     float distBottom = dist(x+(size/2.0), (y+size/2.0), user.x+user.size, user.y+user.size); 
 
-    //  if(!((distTop<(size/2.0)+10 & distTop>(size/2.0)-10) |
-    //distBottom<(size/2.0)+10 & distBottom>(size/2.0)-10)){return false;} //if neither are true: ball is too far from wheel
-    //        stroke(0);
+      if(!((distTop<(size/2.0)+10 & distTop>(size/2.0)-10) |
+    distBottom<(size/2.0)+10 & distBottom>(size/2.0)-10)){return false;} //if neither are true: ball is too far from wheel
+            stroke(0);
 
-    //  boolean checkTop = true;
-    //  if(user.y>y+(size/2.0)){stroke(255);checkTop =false;}
-    //   for(int i=0; i<4; i++){
-    //  if(sectors[i]==user.col){continue;}//if ball and sector are same color skip
-    //      float angle = HALF_PI*i+(frameCount*speed)/40.0;
-    //      if(checkTop){if(angle%TWO_PI>PI & angle%TWO_PI<HALF_PI+PI){return true;}}
-    //      else{if(angle%TWO_PI>0 & angle%TWO_PI<HALF_PI){return true;}}  
-    //    }
-    //  return false;
+      boolean checkTop = true;
+      if(user.y>y+(size/2.0)){stroke(255);checkTop =false;}
+       for(int i=0; i<4; i++){
+      if(sectors[i]==user.col){continue;}//if ball and sector are same color skip
+          float angle = HALF_PI*i+(frameCount*speed)/40.0;
+          if(checkTop){if(angle%TWO_PI>PI & angle%TWO_PI<HALF_PI+PI){return true;}}
+          else{if(angle%TWO_PI>0 & angle%TWO_PI<HALF_PI){return true;}}  
+        }
+      return false;
   }
 }

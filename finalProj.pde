@@ -20,6 +20,9 @@ float transY=0;
 float checkPoint =0;
 
 ArrayList<Obstacle> setGame = new ArrayList<Obstacle>();
+
+Integer[] clipping = {0, 15};
+color bottom = color(255,0,0);
 void draw() {
   background(255);
   if (dyingCount>0) {
@@ -42,7 +45,7 @@ void playGame() {
   drawScore();
   user.drawBall(); 
   user.move();
-  if(endless & user.y<checkPoint+200){
+  if(endless & user.y<checkPoint+height){
   addToGame(checkPoint);
   }
   for (Obstacle obs : setGame) {
@@ -65,13 +68,13 @@ transY+=0.8;
 void drawScore() {
   fill(0);
   textSize(30);
-  text(""+(int)(transY/4.0), 30, height-40-transY, 500);
+  text(""+(int)(transY/4.0), 30, 40-transY, 500);
 }
 
 void reset() {
   dying=new ArrayList<Ball>();
   for (int i=0; i<5; i++) {
-    dying.add(new Ball(user.x, user.y+i*12, 10));
+    dying.add(new Ball(user.x, user.y, 10));
   }
   transY=0;
   dyingCount=400;
@@ -131,26 +134,22 @@ void fillGame() {
 addToGame(checkPoint);
   }
 }
+
 void addToGame(float y){
   int rnd = (int)random(3);
   Obstacle obs;
   if(rnd==0){
- // y-=230;
- // obs = new Rotator(y);
+  y-=230;
+  obs = new Rotator(y);
+  }
+  else if(rnd==1){
     y-=530;
   obs = new Wheel(y);
   }
-  //else if(rnd==1){
-  //  y-=530;
-  //obs = new Wheel(y);
-  //}
   else{
-    //y-=150;
-  //obs = new ColorChange(y);
-    y-=530;
-  obs = new Wheel(y);
+   y-=150;
+  obs = new ColorChange(y);
   }
   setGame.add(obs);
-    checkPoint=y;
-
+  checkPoint=y;
 }

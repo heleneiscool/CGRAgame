@@ -3,21 +3,22 @@ class Rotator extends Obstacle{
   //coordinates for left-top coner of shape
   float rotateWidth =width;
   float change = rotateWidth/8;
-  float x =rotateWidth-frameCount%rotateWidth;
+  float speed=3;
+  float x =rotateWidth-(speed*frameCount)%rotateWidth;
   float y = height/2-size/2;
   color[] colors = {color(255, 165, 0), color(255, 20, 147), color(0, 255, 0), color(0, 0, 255)};
 Rotator(){
   size = 25;
   //coordinates for left-top coner of shape
   change = rotateWidth/8;
-  x =width-frameCount%rotateWidth;
+  x =width-(speed*frameCount)%rotateWidth;
   y = height/2-size/2;
 }
 Rotator(float y){
   size = 25;
   //coordinates for left-top coner of shape
   change = width/8;
-  x =width-frameCount%rotateWidth;
+  x =width-(speed*frameCount)%rotateWidth;
 this.y =y;
 }
 
@@ -52,11 +53,11 @@ this.y =y;
 
     }
     fill(colors[0]);
-    arc(-frameCount%rotateWidth, y, size, size, start, angle, CHORD);
+    arc(-(speed*frameCount)%rotateWidth, y, size, size, start, angle, CHORD);
 
   }
   boolean check(Ball user) {
-  x =rotateWidth-frameCount%rotateWidth;
+  x =rotateWidth-(speed*frameCount)%rotateWidth;
     stroke(0);
     strokeWeight(3);
     float distBall = dist(user.x, user.y, rotateWidth/2, y);
