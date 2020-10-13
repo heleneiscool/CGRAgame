@@ -6,6 +6,7 @@ int xSpeed;
 color col = colorScheme[1];
 float x;
 float y;
+float position=0.0;
 
 Ball(){
  size = 30; 
@@ -38,6 +39,9 @@ void move(){
   change =speed;
   }
    y = y + change;
+   position+=change/2500.0;
+   if(position>=6){position-=6;}
+   if(position<0){position+=6;}
 }
 
 void checkBoundaries(){
@@ -58,7 +62,20 @@ void drawBall(){
   noStroke();
   ellipseMode(CORNER);
   fill(this.col);
+  if(endless | !playing){
 ellipse(x, y, size, size);
+  }
+  else {
+    int b=(int)this.position+1;
+      int c=(int)this.position+2;
+      int d=(int)this.position+3;
+      if (b>=6) {b-=6;}
+      if (c>=6) {c-=6;}
+      if (d>=6) {d-=6;}
+      this.x = curvePoint(curvePoints[(int)this.position].x, curvePoints[b].x, curvePoints[c].x, curvePoints[d].x, position-(int)this.position);
+      this.y = curvePoint(curvePoints[(int)this.position].y, curvePoints[b].y, curvePoints[c].y, curvePoints[d].y, position-(int)this.position);
+      ellipse(x-this.size/2.0,y-this.size/2.0,size,size);
+  }
 }
 
 }

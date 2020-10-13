@@ -3,7 +3,7 @@ class Wheel extends Obstacle {
   //coordinates for left-top coner of shape
   float x =300/2-size/2;
   float y = 600/2-size/2;
-  float speed = 3;
+  float speed = 5;
   color[] sectors = {color(255, 165, 0), color(255, 20, 147), color(0, 255, 0), color(0, 0, 255)};
 
   Wheel() {
