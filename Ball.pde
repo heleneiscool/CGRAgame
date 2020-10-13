@@ -1,5 +1,5 @@
 class Ball{
-int jumping=20;
+int jumping=0;
 float size; 
 int speed;
 int xSpeed;
@@ -30,8 +30,9 @@ void move(){
   if(jumping!=20){
      change = (-(20-jumping)*(speed) +jumping*(speed));
 
-  jumping++;  
-  transY+=abs(change/3.0);
+  jumping++; 
+  if(endless){transY+=abs(change/3.0);}
+  //else{t-=change*0.0008;if(t>=1){t-=1; a++;}}
 }
   else{
   change =speed;
@@ -39,22 +40,11 @@ void move(){
    y = y + change;
 }
 
-void checkWalls(){
-  if (this.y<0) {//top boundary
-    y=0;
-    speed = abs(speed);
-  } else if (y>height-size) {//bottom boundary
-    y=height-size;
-    speed= -abs(speed);
-  }
-  if(xSpeed==0){return;}
-  if (x<0) {//left boundary
-    x=0;
-    xSpeed = abs(xSpeed);
-  } else if (x>width-size) {//right boundary
-    x=width-size;
-    xSpeed = -abs(xSpeed);
-  }
+void checkBoundaries(){
+if(this.x<transX){this.x=transX;}
+if(this.x+user.size/2.0>transX+width){this.x=transX+width-this.size/2.0;}
+if(this.y<transY){this.y=transY;}
+if(this.y+user.size/2.0>transY+width){this.y=transY+width-this.size/2.0;}
 }
 
 

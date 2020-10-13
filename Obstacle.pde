@@ -1,5 +1,6 @@
 abstract class Obstacle{
   float size = 25;
+  float position=0.5;
   //coordinates for left-top coner of shape
   float change = width/8;
   float x =width-frameCount%width;
@@ -8,4 +9,5 @@ abstract class Obstacle{
   void drawObstacle(){}
     boolean check(Ball user){return false;}
    //void clip(){}
+  void setCoords(float x, float y){this.x=x;this.y=y;}
 }
