@@ -4,20 +4,20 @@ float transY=0;//above for y axis
 PVector[] curvePoints = new PVector[6] ;//stores points for curved path
 int a=0;//which curve segment is centered
 float t=0.0;//position on curve segment
-int width=300;
-int height =600;
+//int width=300;
+//int height =600;
 void setup() {
-  size(300, 600);
+  //size(300, 600);
+    fullScreen();
   //frameRate(30);
 }
 //orange, pink, green, blue
 color[] colorScheme = {color(255, 165, 0), color(255, 20, 147), color(0, 255, 0), color(0, 0, 255)};
 PVector[] buttons = {new PVector(10, 300), new PVector(10, 380)};
 
-ArrayList<Ball> dying = new ArrayList<Ball>();
 int dyingCount=0;
 
-Ball user = new Ball();
+Ball user;
 
 boolean endless = false;
 boolean playing =false;
@@ -30,17 +30,14 @@ Integer[] clipping = {0, 15};
 color bottom = color(255,0,0);
 void draw() {
   background(255);
-  if (dyingCount>0) {
-    for (Ball b : dying) {
-      b.drawBall();
-      b.move();
-      b.checkBoundaries();
-      dyingCount--;
-    }
-  } else if (!playing) {
+   if (!playing) {
     drawRectangles();
   } else {
     playGame();
+    if (dyingCount>0) {
+    dyingCount--;
+    if(dyingCount==0){reset();}
+  }
   }
 }
 void playGame() {
@@ -54,19 +51,21 @@ void playGame() {
   if((a+t)-user.position>0.05){translateByCurve(-0.002);}
     translateByCurve();
    
-      for (int index=0;index<setGame.size(); index++) {
-        Obstacle obs =setGame.get(index);
-       //Obstacle obs = setGame.get(frameCount%setGame.size());
+  //    for (int index=0;index<setGame.size(); index++) {
+  //      Obstacle obs =setGame.get(index);
+  //     //Obstacle obs = setGame.get(frameCount%setGame.size());
 
       
 
-      obs = setGame.get(index);
-    obs.drawObstacle();
-    if (obs.check(user)) {
-      if(obs instanceof ColorChange){user.col = colorScheme[(int)random(colorScheme.length-1)];}
-      else{reset();}
-    }
-  }
+  //    obs = setGame.get(index);
+  //  obs.drawObstacle();
+  //  if (obs.check(user)) {
+  //    if(obs instanceof ColorChange){user.col = colorScheme[(int)random(colorScheme.length-1)];}
+  //    else{  dyingCount=40;}
+  //  }
+  //}
+  
+  
   //user.x=-transX+width/2.0-user.size/2.0;
   //user.y=-transY+height/2.0-user.size/2.0;
   
@@ -77,21 +76,27 @@ void playGame() {
   if(endless & user.y<checkPoint+height){
   addToGame(checkPoint, 0);
   }
-  for (Obstacle obs : setGame) {
-    obs.drawObstacle();
-    if (obs.check(user)) {
-      if(obs instanceof ColorChange){user.col = colorScheme[(int)random(colorScheme.length-1)];}
-      else{reset();}
-    }
-  }
   if (user.y>height-user.size-transY) {
     user.y = height-user.size-transY;
   }//lose game
   else if (user.y<-transY) {
-    reset();
+     dyingCount=40;
   }//win game
 transY+=0.8;
 }
+
+  for (Obstacle obs : setGame) {
+    obs.drawObstacle();
+    if (obs.check(user)) {
+      if(obs instanceof ColorChange){user.col = colorScheme[(int)random(colorScheme.length-1)];}
+      else{
+        int saveX = user.xSpeed;
+        user.xSpeed = user.ySpeed;
+        user.ySpeed = saveX;
+      dyingCount=40;
+    }
+    }
+  }
   user.drawBall(); 
   user.move();
 }
@@ -102,23 +107,21 @@ void drawScore() {
 }
 
 void reset() {
-  dying=new ArrayList<Ball>();
-  for (int i=0; i<5; i++) {
-    dying.add(new Ball(user.x, user.y, 10));
-  }
   transY=0;
-  dyingCount=400;
+  transX=0;
   playing=false;
   user=new Ball();
   endless=false;
 }
 
 void mousePressed() {
+  if(dyingCount!=0){return;}
   if (playing) {
     user.makeJump();
   } else {
     if (hovered(buttons[0])) {
       playing=true;
+      user=new Ball();
         for ( int i=0; i < 6; i++ ) {
     curvePoints[i]=new PVector(random(-width*4, width*4), random(-height*4, height*4)); //starts with random curves
   }
@@ -126,6 +129,7 @@ void mousePressed() {
     }
     if (hovered(buttons[1])) {
       playing=true;
+            user=new Ball();
       endless=true;
       fillGame();
     }
@@ -133,24 +137,32 @@ void mousePressed() {
 }
 
 void keyPressed() {
+    if(dyingCount!=0){return;}
   if (playing) {
     user.makeJump();
   }
 }
 
+
 void drawRectangles() {
-  noStroke();
+  strokeWeight(5);
   for (int i=0; i<buttons.length; i++) {
+          noFill();
     PVector value = buttons[i];
+    if (!hovered(value)) {
+      stroke(colorScheme[0]);
+    } else {  
+      stroke(colorScheme[1]);
+    }
+    rect(value.x, value.y, width-20, 30);
+    textSize(30);
     if (!hovered(value)) {
       fill(colorScheme[0]);
     } else {  
       fill(colorScheme[1]);
     }
-    rect(value.x, value.y, width-20, 30);
-    textSize(30);
-    if(i==0){text("PLAY",value.x, value.y);}
-    else{text("ENDLESS",value.x, value.y);}
+    if(i==0){text("TRACK",value.x+5, value.y+27);}
+    else{text("ENDLESS",value.x+5, value.y+27);}
   }
 }
 
@@ -169,8 +181,8 @@ addToGame(checkPoint, i);
   }
 }
 else{ 
-  checkPoint=0;
-  for(int i=0;i<12;i++){
+  checkPoint=0.5;
+  for(int i=0;i<11;i++){
   Obstacle obs;
   obs = new Arrows(checkPoint);
     //obs.position= checkPoint;
@@ -208,17 +220,15 @@ if(t>=1){t-=1; a++;}
 }
 void addToGame(float y, int i){
   int rnd = (int)random(3);
+    y-=500;
   Obstacle obs;
   if(rnd==0){
-  y-=230;
   obs = new Rotator(y);
   }
   else if(rnd==1){
-    y-=530;
   obs = new Wheel(y);
   }
   else{
-   y-=150;
   obs = new ColorChange(y);
   }
     obs.position= 0.5*i;

@@ -35,19 +35,22 @@ class Arrows extends Obstacle{
   fill(colorScheme[0]);
 
       translate(x, y); //translate 'world'
-boolean stage = (frameCount%600)>300;
-if(frameCount%300==0){return;}
+boolean stage = (frameCount*4%600)>300;
+if(frameCount*4%300==0){return;}
 for(int i=0; i<2; i++){
       // position of triangle
-      PVector vect1 = new PVector(0+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),0).rotate(i*PI+angle);
-      PVector vect2 = new PVector(-10+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),-10).rotate(i*PI+angle);
-      PVector vect3 = new PVector(30+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),0).rotate(i*PI+angle);
-      PVector vect4 = new PVector(-10+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),10).rotate(i*PI+angle);
+      PVector[] vectors = new PVector[4];
+            vectors[0]= new PVector(0+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),0).rotate(i*PI+angle);
+      vectors[1] = new PVector(-10+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),-10).rotate(i*PI+angle);
+      vectors[2] = new PVector(30+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),0).rotate(i*PI+angle);
+      vectors[3] = new PVector(-10+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),10).rotate(i*PI+angle);
+     
+
 beginShape();
- vertex(vect1.x, vect1.y);
- vertex(vect2.x, vect2.y);
- vertex(vect3.x, vect3.y);
- vertex(vect4.x, vect4.y);
+ vertex(vectors[0].x, vectors[0].y);
+ vertex(vectors[1].x, vectors[1].y);
+ vertex(vectors[2].x, vectors[2].y);
+ vertex(vectors[3].x, vectors[3].y);
 endShape(CLOSE);
 }
       translate(-x, -y);
@@ -67,27 +70,21 @@ endShape(CLOSE);
       float angle = atan2(ty, tx); //angle to rotate tri by
 
      translate(x, y); //translate 'world'
-boolean stage = (frameCount%600)>300;
-if(frameCount%300==0){return false;}
+boolean stage = (frameCount*4%600)>300;
+if(frameCount*4%300==0){return false;}
 for(int i=0; i<2; i++){
       // position of triangle
-      PVector[] vectors = new PVector[5];
-      vectors[0]= new PVector(0+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),0).rotate(i*PI+angle);
-      vectors[1] = new PVector(-10+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),-10).rotate(i*PI+angle);
-      vectors[2] = new PVector(30+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),0).rotate(i*PI+angle);
-      vectors[3] = new PVector(-10+30*(i-1)-i*30+(stage?-(frameCount%300)/5:-60+(frameCount%300)/5),10).rotate(i*PI+angle);
-      vectors[4]=vectors[0];
+          PVector[] vectors = new PVector[5];
+            vectors[0]= new PVector(0+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),0).rotate(i*PI+angle);
+      vectors[1] = new PVector(-10+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),-10).rotate(i*PI+angle);
+      vectors[2] = new PVector(30+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),0).rotate(i*PI+angle);
+      vectors[3] = new PVector(-10+30*(i-1)-i*30+(stage?-((4*frameCount)%300):-300+((4*frameCount)%300)),10).rotate(i*PI+angle);
+     vectors[4]=vectors[0];
       
-      int count=0;
-      stroke(255,0,0);
-for(int index=0; index<4; index++){
-line(vectors[index].x, vectors[index].y, vectors[index+1].x, vectors[index+1].y);
-}
-
 noFill();
 PVector userTranslated = new PVector(user.x-size/2.0, user.y-size/2.0);
 userTranslated = new PVector(userTranslated.x-x, userTranslated.y-y);
-ellipse(userTranslated.x, userTranslated.y, user.size, user.size);
+//ellipse(userTranslated.x, userTranslated.y, user.size, user.size);
 if(polyCircle(vectors, userTranslated.x+size/2.0, userTranslated.y+size/2.0, size/2.0)){return true;}
   
 }
@@ -161,11 +158,6 @@ boolean lineCircle(float x1, float y1, float x2, float y2, float cx, float cy, f
   boolean onSegment = linePoint(x1,y1,x2,y2, closestX,closestY);
   if (!onSegment) return false;
 
-  // optionally, draw a circle at the closest point
-  // on the line
-  fill(255,0,0);
-  noStroke();
-  ellipse(closestX, closestY, 20, 20);
 
   // get distance to closest point
   distX = closestX - cx;

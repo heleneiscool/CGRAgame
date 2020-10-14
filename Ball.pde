@@ -1,42 +1,35 @@
 class Ball{
 int jumping=0;
-float size; 
-int speed;
-int xSpeed;
+float size=30; 
+int ySpeed=1;
+int xSpeed=0;
+int change=0;
 color col = colorScheme[1];
-float x;
-float y;
+float x=width/2-15;
+float y=height-size;
 float position=0.0;
-
-Ball(){
- size = 30; 
- speed = 1;
- xSpeed=0;
- this.col = colorScheme[1];
- x=150-size/2.0;
- y= 600;
-}
-Ball(float x, float y, float size){
-this.size = size;
-this.x =x;
-this.y = y;
-this.col = colorScheme[(int)random(colorScheme.length-1)];
-speed=(int)random(-5, 5);
-xSpeed=(int)random(-5, 5);
-}
+Ball(){}
+//Ball(float x, float y, float size){
+//this.size = size;
+//this.x =x;
+//this.y = y;
+//this.col = colorScheme[(int)random(colorScheme.length-1)];
+//ySpeed=(int)random(-5, 5);
+//xSpeed=(int)random(-5, 5);
+//}
 
 void move(){  
   x=x+xSpeed;
-  float change=0;
+  change=0;
   if(jumping!=20){
-     change = (-(20-jumping)*(speed) +jumping*(speed));
+     change = (-(20-jumping)*(ySpeed) +jumping*(ySpeed));
 
   jumping++; 
   if(endless){transY+=abs(change/3.0);}
   //else{t-=change*0.0008;if(t>=1){t-=1; a++;}}
 }
   else{
-  change =speed;
+  change =ySpeed;
   }
    y = y + change;
    position+=change/2500.0;
